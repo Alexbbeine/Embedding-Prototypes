@@ -1,0 +1,32 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Jupyter 
+.ipynb_checkpoints/
+
+# Generierte Ausgaben 
+# CSV/JSON/PNG werden bei jedem Skript-/Container-Lauf neu erzeugt.
+# Verzeichnisstruktur bleibt über .gitkeep erhalten.
+outputs/tables/*
+outputs/figures/*
+outputs/models/*
+!outputs/**/.gitkeep
+
+# HuggingFace-Modell-Cache 
+# Lokal gecachte Modelle (außerhalb des Docker-Volumes)
+.cache/
+*.bin
+*.safetensors
+
+# IDEs & Editoren 
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Betriebssystem 
+.DS_Store
+Thumbs.db

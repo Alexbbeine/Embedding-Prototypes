@@ -1,0 +1,17 @@
+model_name: "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+dataset_name: "mteb/stsb_multi_mt"
+dataset_config: "de"
+split: "dev"
+
+# Setze eine ganze Zahl, um N Beispiele pro Kategorie zu sampeln (z. B. 50).
+# null = alle verfügbaren Beispiele verwenden.
+sample_per_category: null
+
+random_seed: 42
+output_dir: "outputs/tables"
+
+# Schwellenwerte auf Basis des normalisierten Gold-Scores (0–1)
+thresholds:
+  dissimilar_max: 0.3   # gold_score_normalized < 0.3  → "unähnlich"
+  similar_min: 0.7      # gold_score_normalized >= 0.7  → "sehr ähnlich"
+                        # dazwischen                    → "teilweise ähnlich"

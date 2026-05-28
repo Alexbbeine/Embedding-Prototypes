@@ -1,0 +1,48 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Embedding-Prototypen – Docker Compose
+#
+# Verwaltet die beiden Embedding-Prototypen als separate Services.
+# Jeder Service hat sein eigenes Dockerfile unter docker/<prototyp>/.
+#
+# Schnellstart:
+#   docker compose run sbert            # SBERT-Evaluation ausführen
+#   docker compose run sbert bash       # Interaktive Shell im Container
+#   docker compose build sbert          # Image neu bauen (nach Code-Änderungen)
+#
+# Ausgaben (CSV/JSON/PNG) erscheinen automatisch unter ./outputs/ auf dem Host.
+# Das HuggingFace-Modell wird beim ersten Start heruntergeladen und danach
+# im Volume 'hf-cache' gespeichert – kein erneuter Download bei Neustarts.
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  # ── Prototyp 2: Sentence-BERT ─────────────────────────────────────────────
+  sbert:
+    build:
+      context: .                            # Projektroot als Build-Kontext
+      dockerfile: src/sbert/Dockerfile      # Dockerfile des SBERT-Prototyps
+    volumes:
+      - ./outputs:/app/outputs              # Ergebnisse direkt auf dem Host
+      - hf-cache:/root/.cache/huggingface   # Modell-Cache (einmaliger Download)
+    stdin_open: true                        # Für 'docker compose run sbert bash'
+    tty: true
+
+  # ── Prototyp 1: Word2Vec ──────────────────────────────────────────────────
+  # Noch nicht implementiert. Service-Definition ist vorbereitet und kann
+  # aktiviert werden, sobald src/word2vec/ fertiggestellt ist.
+  #
+  # word2vec:
+  #   build:
+  #     context: .
+  #     dockerfile: src/word2vec/Dockerfile
+  #   volumes:
+  #     - ./outputs:/app/outputs
+  #   stdin_open: true
+  #   tty: true
+
+# ── Benannte Volumes ──────────────────────────────────────────────────────────
+volumes:
+  hf-cache:
+    # Persistenter Cache für HuggingFace-Modelle (sentence-transformers).
+    # Bleibt auch nach 'docker compose down' erhalten.
+    # Zum vollständigen Löschen: docker volume rm <projektname>_hf-cache

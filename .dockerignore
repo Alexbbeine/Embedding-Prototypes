@@ -1,0 +1,49 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# .dockerignore – schließt Dateien vom Docker Build-Kontext aus.
+#
+# Ohne diese Datei würde Docker die gesamte .venv/ (>500 MB) und den
+# sbert-prototyp-Ordner in den Build-Kontext einschließen, was den
+# 'docker build'-Schritt erheblich verlangsamt.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Virtuelle Python-Umgebung – im Container wird pip direkt verwendet
+.venv/
+
+# Alternativer Prototyp-Ordner mit eigener .venv
+sbert-prototyp/
+
+# Python-Caches
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ausgaben – werden per Volume gemountet, nicht ins Image gebacken
+outputs/
+
+# Notebooks – nur für lokale Entwicklung, nicht für Container-Ausführung
+notebooks/
+*.ipynb
+.ipynb_checkpoints/
+
+# Git-Metadaten
+.git/
+.gitignore
+.gitattributes
+
+# Claude Code
+.claude/
+CLAUDE.md
+memory/
+
+# Docker-Konfiguration – gehört nicht in den Container
+docker/
+docker-compose.yaml
+.dockerignore
+
+# Editoren & IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
