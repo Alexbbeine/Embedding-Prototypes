@@ -36,8 +36,7 @@ def compute_embeddings(
         model:      Geladenes SentenceTransformer-Modell.
         sentences:  Liste der zu enkodierenden Sätze.
         batch_size: Anzahl Sätze pro Batch (beeinflusst Speicherbedarf).
-        desc:       Optionale Beschreibung, die vor dem Fortschrittsbalken
-                    auf der Konsole ausgegeben wird.
+        desc:       Optionale Beschreibung, die vor dem Fortschrittsbalken auf der Konsole ausgegeben wird.
 
     Returns:
         Embedding-Matrix der Form (N, D), dtype float32.
@@ -59,9 +58,8 @@ def compute_cosine_similarities(
     Berechnet die paarweise Kosinusähnlichkeit zwischen zwei Embedding-Matrizen.
 
     Die Embeddings werden vor der Berechnung explizit L2-normalisiert.
-    Das stellt korrekte Ergebnisse sicher, unabhängig davon, ob das Modell
-    die Vektoren bereits normalisiert ausgibt.  Bei bereits normierten
-    Vektoren gilt: Skalarprodukt = Kosinusähnlichkeit.
+    Das stellt korrekte Ergebnisse sicher, unabhängig davon, ob das Modell die Vektoren bereits normalisiert ausgibt. 
+    Bei bereits normierten Vektoren gilt: Skalarprodukt = Kosinusähnlichkeit.
 
     Args:
         embeddings1: Embedding-Matrix, Form (N, D).
@@ -88,9 +86,8 @@ def assign_category(
     """
     Ordnet einen Ähnlichkeitswert einer von drei lesbaren Kategorien zu.
 
-    Die Schwellenwerte sind in ``configs/sbert.yaml`` unter ``thresholds``
-    konfigurierbar und werden hier als explizite Parameter übergeben, damit
-    die Funktion zustandslos und unabhängig von Konfigurationsdateien bleibt.
+    Die Schwellenwerte sind in ``configs/sbert.yaml`` unter ``thresholds`` konfigurierbar und werden hier als explizite Parameter übergeben, 
+    damit die Funktion zustandslos und unabhängig von Konfigurationsdateien bleibt.
 
     Kategorien::
 

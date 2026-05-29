@@ -37,8 +37,7 @@ import yaml
 from datasets import load_dataset
 from sentence_transformers import SentenceTransformer
 
-# Sicherstellen, dass die Submodule importierbar sind,
-# unabhängig davon, ob das Skript direkt oder als Modul aufgerufen wird.
+# Sicherstellen, dass die Submodule importierbar sind, unabhängig davon, ob das Skript direkt oder als Modul aufgerufen wird.
 sys.path.insert(0, str(Path(__file__).parent))
 from similarity   import compute_embeddings, compute_cosine_similarities, assign_category
 from evaluation   import compute_metrics
@@ -65,8 +64,7 @@ def load_sts_dataset(
     split: str,
 ) -> tuple[list[str], list[str], list[float]]:
     """
-    Lädt den STS-Datensatz von HuggingFace und gibt Satzpaare mit
-    Gold-Scores zurück.
+    Lädt den STS-Datensatz von HuggingFace und gibt Satzpaare mit Gold-Scores zurück.
 
     Args:
         dataset_name:   HuggingFace-Datensatz-ID (z. B. ``'mteb/stsb_multi_mt'``).
@@ -74,8 +72,7 @@ def load_sts_dataset(
         split:          Datensatz-Split (``'dev'``, ``'test'`` oder ``'train'``).
 
     Returns:
-        Tupel (sentences1, sentences2, gold_scores), wobei gold_scores
-        auf der Originalskala 0–5 liegen.
+        Tupel (sentences1, sentences2, gold_scores), wobei gold_scores auf der Originalskala 0–5 liegen.
     """
     print(f"Lade Datensatz: {dataset_name} [{dataset_config}] split='{split}' ...")
     dataset = load_dataset(dataset_name, name=dataset_config, split=split)
@@ -120,8 +117,7 @@ def evaluate_diagnostic_pairs(
     similar_min: float,
 ) -> pd.DataFrame:
     """
-    Wertet die diagnostischen Satzpaare aus und vergleicht die vom Modell
-    vorhergesagte Kategorie mit dem manuell annotierten Erwartungswert.
+    Wertet die diagnostischen Satzpaare aus und vergleicht die vom Modell vorhergesagte Kategorie mit dem manuell annotierten Erwartungswert.
 
     Args:
         model:          Geladenes SentenceTransformer-Modell.

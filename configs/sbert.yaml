@@ -3,7 +3,7 @@ dataset_name: "mteb/stsb_multi_mt"
 dataset_config: "de"
 split: "dev"
 
-# Setze eine ganze Zahl, um N Beispiele pro Kategorie zu sampeln (z. B. 50).
+# Setze eine ganze Zahl, um N Beispiele pro Kategorie zu sampeln.
 # null = alle verfügbaren Beispiele verwenden.
 sample_per_category: null
 

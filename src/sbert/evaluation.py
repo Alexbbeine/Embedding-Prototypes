@@ -1,8 +1,7 @@
 """
 evaluation.py
 =============
-Auswertungsmetriken für den Vergleich von modellberechneten Kosinusähnlichkeiten
-mit menschlich annotierten Gold-Scores.
+Auswertungsmetriken für den Vergleich von modellberechneten Kosinusähnlichkeiten mit menschlich annotierten Gold-Scores.
 
 Verwendete Metriken
 -------------------
@@ -11,13 +10,11 @@ Pearson-Korrelation
     Sensibel gegenüber Ausreißern; Werte nahe ±1 zeigen starke lineare Bindung.
 
 Spearman-Korrelation
-    Misst den monotonen Rangzusammenhang.  Robuster als Pearson, da nur die
-    relative Reihenfolge der Werte betrachtet wird, nicht ihre absoluten Abstände.
+    Misst den monotonen Rangzusammenhang. Robuster als Pearson, da nur die relative Reihenfolge der Werte betrachtet wird, nicht ihre absoluten Abstände.
 
 Mean Absolute Error (MAE)
     Durchschnittliche absolute Abweichung auf der normierten Skala [0, 1].
-    Direkt interpretierbar: MAE = 0.16 bedeutet im Schnitt 16 Prozentpunkte
-    Abweichung vom menschlichen Urteil.
+    Direkt interpretierbar: MAE = 0.16 bedeutet im Schnitt 16 Prozentpunkte Abweichung vom menschlichen Urteil.
 """
 from __future__ import annotations
 

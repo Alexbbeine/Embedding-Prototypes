@@ -16,20 +16,8 @@
 
 services:
 
-  # ── Prototyp 2: Sentence-BERT ─────────────────────────────────────────────
-  sbert:
-    build:
-      context: .                            # Projektroot als Build-Kontext
-      dockerfile: src/sbert/Dockerfile      # Dockerfile des SBERT-Prototyps
-    volumes:
-      - ./outputs:/app/outputs              # Ergebnisse direkt auf dem Host
-      - hf-cache:/root/.cache/huggingface   # Modell-Cache (einmaliger Download)
-    stdin_open: true                        # Für 'docker compose run sbert bash'
-    tty: true
-
-  # ── Prototyp 1: Word2Vec ──────────────────────────────────────────────────
-  # Noch nicht implementiert. Service-Definition ist vorbereitet und kann
-  # aktiviert werden, sobald src/word2vec/ fertiggestellt ist.
+  # Prototyp 1: Word2Vec 
+  # Noch nicht implementiert. Service-Definition ist vorbereitet und kann aktiviert werden, sobald src/word2vec/ fertiggestellt ist.
   #
   # word2vec:
   #   build:
@@ -40,7 +28,18 @@ services:
   #   stdin_open: true
   #   tty: true
 
-# ── Benannte Volumes ──────────────────────────────────────────────────────────
+  # Prototyp 2: Sentence-BERT 
+  sbert:
+    build:
+      context: .                            # Projektroot als Build-Kontext
+      dockerfile: src/sbert/Dockerfile      # Dockerfile des SBERT-Prototyps
+    volumes:
+      - ./outputs:/app/outputs              # Ergebnisse direkt auf dem Host
+      - hf-cache:/root/.cache/huggingface   # Modell-Cache (einmaliger Download)
+    stdin_open: true                        # Für 'docker compose run sbert bash'
+    tty: true
+
+# Benannte Volumes 
 volumes:
   hf-cache:
     # Persistenter Cache für HuggingFace-Modelle (sentence-transformers).
