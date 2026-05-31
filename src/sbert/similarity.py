@@ -108,21 +108,3 @@ def assign_category(
     if score >= similar_min:
         return "sehr ähnlich"
     return "teilweise ähnlich"
-
-
-# ---------------------------------------------------------------------------
-# Hilfsfunktion
-# ---------------------------------------------------------------------------
-
-def compute_absolute_deviation(cosine_sim: float, gold_norm: float) -> float:
-    """
-    Berechnet die absolute Abweichung zwischen berechnetem und annotiertem Wert.
-
-    Args:
-        cosine_sim: Vom Modell berechnete Kosinusähnlichkeit.
-        gold_norm:  Normalisierter Gold-Score aus dem Datensatz (0–1).
-
-    Returns:
-        |cosine_sim − gold_norm|, gerundet auf 4 Dezimalstellen.
-    """
-    return round(abs(cosine_sim - gold_norm), 4)

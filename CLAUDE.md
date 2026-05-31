@@ -48,7 +48,7 @@ configs/sbert.yaml              ← single source of truth for all parameters
 src/sbert/
     evaluate_similarity.py      ← main script; reads config, orchestrates pipeline
     similarity.py               ← compute_embeddings, compute_cosine_similarities,
-                                   assign_category, compute_absolute_deviation
+                                   assign_category
     evaluation.py               ← compute_metrics (Pearson, Spearman, MAE)
     diagnostics.py              ← DIAGNOSTIC_PAIRS (12 German edge-case pairs)
     __init__.py                 ← re-exports public API of all three modules
