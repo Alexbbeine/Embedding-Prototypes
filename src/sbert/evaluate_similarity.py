@@ -172,7 +172,7 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    # ── Konfiguration laden ──────────────────────────────────────────────────
+    # Konfiguration laden
     config = load_config(args.config)
     model_name:          str       = config["model_name"]
     dataset_name:        str       = config["dataset_name"]
@@ -187,11 +187,11 @@ def main() -> None:
 
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    # ── Modell laden ─────────────────────────────────────────────────────────
+    # Modell laden
     print(f"\nLade Modell: {model_name}")
     model = SentenceTransformer(model_name)
 
-    # ── Datensatz-Evaluation ─────────────────────────────────────────────────
+    # Datensatz-Evaluation
     print("\n=== Datensatz-Evaluation ===")
     sentences1, sentences2, gold_scores = load_sts_dataset(
         dataset_name, dataset_config, split
@@ -257,7 +257,7 @@ def main() -> None:
     print(f"\n  Ergebnisse     → {results_path}")
     print(f"  Zusammenfassung → {summary_path}")
 
-    # ── Diagnostische Satzpaare ───────────────────────────────────────────────
+    # Diagnostische Satzpaare
     print("\n=== Diagnostische Satzpaare ===")
     diag_df = evaluate_diagnostic_pairs(
         model, DIAGNOSTIC_PAIRS, dissimilar_max, similar_min
@@ -284,7 +284,7 @@ def main() -> None:
             f"  {row['expected_category']}"
         )
 
-    # ── Abschließende Zusammenfassung der gespeicherten Dateien ──────────────
+    # Abschließende Zusammenfassung der gespeicherten Dateien
     print("\n" + "═" * 65)
     print("  Gespeicherte Ergebnisse")
     print("═" * 65)

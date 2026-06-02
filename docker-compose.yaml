@@ -2,12 +2,13 @@
 # Embedding-Prototypen – Docker Compose
 #
 # Verwaltet die beiden Embedding-Prototypen als separate Services.
-# Jeder Service hat sein eigenes Dockerfile unter docker/<prototyp>/.
+# Jeder Service hat sein eigenes Dockerfile unter src/<prototyp>/Dockerfile.
 #
 # Schnellstart:
+#   docker compose build sbert          # Image bauen
 #   docker compose run sbert            # SBERT-Evaluation ausführen
-#   docker compose run sbert bash       # Interaktive Shell im Container
-#   docker compose build sbert          # Image neu bauen (nach Code-Änderungen)
+#   docker compose build word2vec       # Image bauen
+#   docker compose run word2vec         # Word2Vec-Ablauf ausführen
 #
 # Ausgaben (CSV/JSON/PNG) erscheinen automatisch unter ./outputs/ auf dem Host.
 # Das HuggingFace-Modell wird beim ersten Start heruntergeladen und danach
@@ -16,17 +17,16 @@
 
 services:
 
-  # Prototyp 1: Word2Vec 
-  # Noch nicht implementiert. Service-Definition ist vorbereitet und kann aktiviert werden, sobald src/word2vec/ fertiggestellt ist.
-  #
-  # word2vec:
-  #   build:
-  #     context: .
-  #     dockerfile: src/word2vec/Dockerfile
-  #   volumes:
-  #     - ./outputs:/app/outputs
-  #   stdin_open: true
-  #   tty: true
+  # Prototyp 1: Word2Vec
+  word2vec:
+    build:
+      context: .                            # Projektroot als Build-Kontext
+      dockerfile: src/word2vec/Dockerfile   # Dockerfile des Word2Vec-Prototyps
+    volumes:
+      - ./outputs:/app/outputs              # Ergebnisse (Tabellen, Figuren, Modell)
+      - ./data:/app/data                    # Korpus-Download/Zwischenstände persistent
+    stdin_open: true                        # Für 'docker compose run word2vec bash'
+    tty: true
 
   # Prototyp 2: Sentence-BERT 
   sbert:

@@ -22,6 +22,9 @@ __pycache__/
 # Ausgaben – werden per Volume gemountet, nicht ins Image gebacken
 outputs/
 
+# Word2Vec-Korpusdaten – per Volume gemountet, nicht ins Image gebacken
+data/
+
 # Notebooks – nur für lokale Entwicklung, nicht für Container-Ausführung
 notebooks/
 *.ipynb

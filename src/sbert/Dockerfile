@@ -17,10 +17,11 @@ FROM python:3.12-slim
 WORKDIR /app
 
 # Abhängigkeiten installieren
-# requirements.txt wird zuerst kopiert, damit Docker den Layer cached.
-# Nur bei Änderungen an requirements.txt wird neu installiert, nicht bei jeder Code-Änderung.
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# requirements-sbert.txt wird zuerst kopiert, damit Docker den Layer cached.
+# Nur bei Änderungen daran wird neu installiert, nicht bei jeder Code-Änderung.
+# Ohne Word2Vec-, Notebook- und Test-Pakete.
+COPY requirements-sbert.txt .
+RUN pip install --no-cache-dir -r requirements-sbert.txt
 
 # Quellcode & Konfiguration kopieren
 COPY src/     src/

@@ -14,8 +14,13 @@ outputs/tables/*
 outputs/figures/*
 outputs/models/*
 !outputs/**/.gitkeep
+# Matplotlib-Cache (von der PCA-Visualisierung des Word2Vec-Prototyps angelegt)
+outputs/.matplotlib/
 
-# HuggingFace-Modell-Cache 
+# Word2Vec-Korpusdaten (Download-Archiv + tokenisierte Zwischenstände)
+data/
+
+# HuggingFace-Modell-Cache
 # Lokal gecachte Modelle (außerhalb des Docker-Volumes)
 .cache/
 *.bin

@@ -1,0 +1,49 @@
+# Korpus (Leipzig Corpora Collection)
+corpus_id:   "deu_news_2010_100K"
+corpus_url:  "https://downloads.wortschatz-leipzig.de/corpora/deu_news_2010_100K.tar.gz"
+corpus_page: "https://corpora.wortschatz-leipzig.de/en?corpusId=deu_news_2010_100K"
+
+# Stichprobe
+# null = vollständigen 100K-Korpus verwenden (feste, reproduzierbare Datenbasis).
+# Ganzzahl = kleinerer Zufallsausschnitt (nur für schnelle Testläufe, mit random_seed).
+sample_size: null
+random_seed: 42
+
+# Sätze mit weniger Tokens werden nach der Tokenisierung verworfen.
+min_sentence_tokens: 2
+
+# Word2Vec-Trainingsparameter (Gensim)
+# Bewusst als nachvollziehbare Basiskonfiguration gewählt, nicht als Optimum.
+word2vec_params:
+  vector_size: 100   # Dimension der Wortvektoren
+  window: 5          # Kontextfenster links und rechts
+  min_count: 5       # Mindesthäufigkeit eines Wortes
+  sg: 1              # 1 = Skip-Gram, 0 = CBOW
+  epochs: 10         # Trainingsdurchläufe
+  workers: 1         # 1 = stabilere Reproduzierbarkeit
+  # seed wird aus random_seed übernommen (siehe config.py)
+
+# Anzahl der nächsten Nachbarn pro Zielwort
+topn: 5
+
+# Zielwörter mit Ersatzwörtern (Fallbacks).
+# Fehlt das Primärwort im trainierten Vokabular, wird das erste verfügbare
+# Ersatzwort aus derselben thematischen Kategorie verwendet.
+target_words:
+  regierung:   ["bundesregierung", "kanzlerin", "minister"]
+  wahl:        ["wahlen", "bundestagswahl", "abstimmung"]
+  partei:      ["parteien", "spd", "cdu"]
+  markt:       ["maerkte", "boerse", "handel"]
+  unternehmen: ["firma", "firmen", "konzern"]
+  bank:        ["banken", "kreditinstitut", "geldhaus"]
+  daten:       ["informationen", "zahlen", "angaben"]
+  software:    ["programm", "computer", "technik"]
+  modell:      ["modelle", "konzept", "system"]
+  netz:        ["internet", "netzwerk", "online"]
+
+# Verzeichnisse (relativ zum Projektroot)
+# Korpus-Rohdaten/Zwischenstände unter data/, Ergebnisse unter outputs/.
+data_dir:           "data"
+model_dir:          "outputs/models"
+output_tables_dir:  "outputs/tables"
+output_figures_dir: "outputs/figures"

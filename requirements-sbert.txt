@@ -1,0 +1,13 @@
+# Abhängigkeiten Prototyp 2 – Sentence-BERT
+
+# Sentence-BERT
+sentence-transformers>=2.2.0
+datasets>=2.0.0
+
+# Gemeinsam genutzt
+pandas>=1.5.0
+numpy>=1.23.0
+pyyaml>=6.0
+scikit-learn>=1.0.0
+scipy>=1.9.0
+matplotlib>=3.7.0

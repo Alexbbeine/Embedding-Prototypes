@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project context
 
 Academic seminar project: "Vom Wort zum Vektor – Embeddings für Texte" (DHBW).  
-Two self-contained Python prototypes — Word2Vec (Prototype 1, largely stubs) and Sentence-BERT (Prototype 2, fully implemented). No web server, no database, no API.
+Two self-contained Python prototypes — Word2Vec (Prototype 1) and Sentence-BERT (Prototype 2), both fully implemented. No web server, no database, no API.
 
 ## Environment
 
@@ -38,6 +38,35 @@ For the Jupyter notebook, `ipykernel` must be installed first:
 .venv\Scripts\pip install ipykernel
 # Then open notebooks/02_sbert_similarity.ipynb in VS Code and select .venv as kernel
 ```
+
+## Running the Word2Vec prototype
+
+The Word2Vec prototype is a multi-step CLI (download → prepare → train → evaluate). Run it as a module from the project root:
+
+```powershell
+# Full workflow
+.venv\Scripts\python.exe -m src.word2vec.pipeline
+
+# Skip download if the archive already exists in data/raw/
+.venv\Scripts\python.exe -m src.word2vec.pipeline --skip-download
+
+# Individual steps
+.venv\Scripts\python.exe -m src.word2vec.download
+.venv\Scripts\python.exe -m src.word2vec.prepare    # optional: --sample-size 20000
+.venv\Scripts\python.exe -m src.word2vec.train
+.venv\Scripts\python.exe -m src.word2vec.evaluate
+```
+
+**`gensim`:** required for `train`/`evaluate`. `gensim 4.4.0` ships a Python 3.13 wheel and is verified working in this `.venv` (Python 3.13 + numpy 2.4). If a future environment cannot install `gensim`, the Docker container (`docker compose run word2vec`, Python 3.12 base) is a fallback. The corpus modules and unit tests run without `gensim` (it is imported lazily).
+
+## Running the tests
+
+```powershell
+.venv\Scripts\pip install pytest        # if not already installed
+.venv\Scripts\python.exe -m pytest      # run from project root
+```
+
+`tests/conftest.py` puts the project root on `sys.path` so tests import `src.word2vec...`. The Word2Vec smoke test is skipped automatically when `gensim` (or another ML dependency) is missing; the corpus/target-word unit tests always run.
 
 ## Architecture
 
@@ -82,9 +111,52 @@ notebooks/02_sbert_similarity.ipynb  ← narrative walkthrough, same logic as th
 | `sample_per_category` | `null` = use all 1500 pairs; integer = stratified sample N per category |
 | `thresholds.dissimilar_max` / `similar_min` | Applied to `gold_score_normalized` (0–1 scale) for the three-way categorization |
 
-### Word2Vec prototype (Prototype 1)
+### Word2Vec prototype (fully implemented)
 
-`src/word2vec/` and `configs/word2vec.yaml` are present but **not yet implemented** (empty stubs). Do not modify these unless explicitly asked.
+Trains static German word vectors with `gensim` on the Leipzig corpus (`deu_news_2010_100K`) and analyses nearest-neighbour relations for selected target words.
+
+```
+configs/word2vec.yaml           ← single source of truth (corpus, hyperparameters,
+                                   target words, seed, sample size, topn, paths)
+src/word2vec/
+    config.py                   ← loads YAML, derives all parameters + paths
+    corpus.py                   ← Leipzig parsing, cleaning, tokenization (pure fns)
+    download.py                 ← download_corpus (Leipzig archive)
+    prepare.py                  ← prepare_corpus (sample, tokenize, JSONL + metadata)
+    train.py                    ← train_model (gensim Word2Vec; lazy gensim import)
+    evaluate.py                 ← resolve_target_words, build_neighbor_rows,
+                                   evaluate_model (lazy gensim import)
+    visualize.py                ← plot_pca, plot_target_pcas (lazy matplotlib/sklearn)
+    pipeline.py                 ← orchestrates download → prepare → train → evaluate
+    __init__.py                 ← re-exports public API; sets UTF-8 stdout
+    Dockerfile                  ← Prototyp 1 (Python 3.12 base, gensim wheels)
+data/                           ← raw archive + processed JSONL (gitignored)
+outputs/models/                 ← trained model (gitignored)
+outputs/tables/                 ← word2vec_neighbors.csv/.md, word2vec_target_words.json,
+                                   word2vec_model_metadata.json
+outputs/figures/                ← word2vec_pca_neighbors.png, word2vec_targets/pca_*.png
+notebooks/01_word2vec_exploration.ipynb  ← narrative walkthrough of the same workflow
+tests/                          ← test_corpus, test_evaluate, test_smoke (+ conftest)
+docs/prototyp_word2vec.md       ← method write-up for the paper
+```
+
+**Data flow (`pipeline.py`):**
+1. `download_corpus()` → Leipzig `.tar.gz` into `data/raw/`
+2. `prepare_corpus()` → read sentences, optional sample, clean + tokenize, write `data/processed/sentences_100k.jsonl` + metadata
+3. `train_model()` → gensim `Word2Vec` on the tokenized sentences → `outputs/models/...model` + metadata JSON
+4. `evaluate_model()` → for each target word, `topn` nearest neighbours by cosine similarity → CSV/Markdown; PCA plots (global + per target); `word2vec_target_words.json`
+
+**Import / path notes:** modules use package-relative imports and are run as `python -m src.word2vec.<module>`. Unlike SBERT (CWD-relative), `config.py` anchors all paths to the project root via `Path(__file__).resolve().parents[2]`, so outputs land in the repo regardless of CWD — but still run from the root for consistency. `train.py` and `evaluate.py` import `gensim` lazily (inside functions) and `visualize.py` imports matplotlib/sklearn lazily, so `import src.word2vec` works without those heavy/optional dependencies.
+
+**Key config parameters (`configs/word2vec.yaml`):**
+
+| Key | Effect |
+|---|---|
+| `sample_size` | `null` = full 100K corpus; integer = smaller random subset (test runs) |
+| `random_seed` | Seed for sampling and (injected into) `word2vec_params.seed` |
+| `word2vec_params` | gensim hyperparameters (`vector_size`, `window`, `min_count`, `sg`, `epochs`, `workers`) |
+| `topn` | Number of nearest neighbours reported per target word |
+| `target_words` | Target word → fallback list (first in-vocabulary candidate is used) |
 
 ### Notebook vs. script
 
@@ -92,38 +164,39 @@ notebooks/02_sbert_similarity.ipynb  ← narrative walkthrough, same logic as th
 
 ## Dependencies
 
-`requirements.txt` lists the minimal set:
-`sentence-transformers`, `datasets`, `pandas`, `numpy`, `pyyaml`, `scikit-learn`, `scipy`.  
-`matplotlib` is used in the notebook and is already available as a transitive dependency of `sentence-transformers`.  
-`ipykernel` is **not** in `requirements.txt` — install separately only when running notebooks.
+`requirements.txt` covers both prototypes:
+- **SBERT (Prototype 2):** `sentence-transformers`, `datasets`
+- **Word2Vec (Prototype 1):** `gensim`, `tabulate` (`tabulate` is required by `pandas.to_markdown` for `word2vec_neighbors.md`)
+- **Shared:** `pandas`, `numpy`, `pyyaml`, `scikit-learn`, `scipy`, `matplotlib`
+- **Notebooks & tests:** `ipykernel`, `pytest`
+
+`gensim 4.4.0` is verified working on this Python 3.13 `.venv` (it provides a cp313 wheel); the Docker image (Python 3.12) is a fallback if a future environment can't install it.
 
 ## Docker
 
-Each prototype has its own Dockerfile under `docker/<prototype>/`:
+Each prototype has its own Dockerfile under `src/<prototype>/Dockerfile`:
 
 ```
-docker/
-    sbert/
-        Dockerfile      ← Prototyp 2: vollständig lauffähig
-    word2vec/
-        Dockerfile      ← Prototyp 1: Platzhalter (noch nicht implementiert)
-docker-compose.yaml     ← verwaltet beide Services
-.dockerignore           ← schließt .venv/, sbert-prototyp/, outputs/ aus
+src/sbert/Dockerfile        ← Prototyp 2 (Python 3.12)
+src/word2vec/Dockerfile     ← Prototyp 1 (Python 3.12; gensim wheels)
+docker-compose.yaml         ← verwaltet beide Services (sbert, word2vec)
+.dockerignore               ← schließt .venv/, sbert-prototyp/, outputs/, data/ aus
 ```
 
-**SBERT-Container starten (Docker Desktop oder CLI):**
+**Container starten (Docker Desktop oder CLI):**
 
 ```powershell
-# Evaluation ausführen (Ergebnisse erscheinen in ./outputs/tables/)
+# SBERT-Evaluation (Ergebnisse in ./outputs/tables/)
 docker compose run sbert
+
+# Word2Vec-Ablauf (Download → Training → Auswertung; Ergebnisse in ./outputs/)
+docker compose run word2vec
 
 # Interaktive Shell im Container
 docker compose run sbert bash
 
 # Image neu bauen (nach Code-Änderungen)
-docker compose build sbert
+docker compose build word2vec
 ```
 
-Der Build-Kontext ist immer der Projektroot (`.`). Das HuggingFace-Modell wird beim ersten Start heruntergeladen und im benannten Volume `hf-cache` gespeichert – kein erneuter Download bei Neustarts.
-
-Der Word2Vec-Service ist in `docker-compose.yaml` auskommentiert und wird aktiviert, sobald `src/word2vec/` implementiert ist.
+Der Build-Kontext ist immer der Projektroot (`.`). Beim SBERT-Service wird das HuggingFace-Modell im benannten Volume `hf-cache` zwischengespeichert. Beim Word2Vec-Service werden `./outputs` und `./data` als Volumes gemountet, sodass Modell, Ergebnisse und der heruntergeladene Korpus auf dem Host erhalten bleiben.
