@@ -9,6 +9,7 @@ sample_per_category: null
 
 random_seed: 42
 output_dir: "outputs/tables"
+figures_dir: "outputs/figures"
 
 # Schwellenwerte auf Basis des normalisierten Gold-Scores (0–1)
 thresholds:

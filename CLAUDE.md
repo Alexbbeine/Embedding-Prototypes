@@ -80,11 +80,14 @@ src/sbert/
                                    assign_category
     evaluation.py               ← compute_metrics (Pearson, Spearman, MAE)
     diagnostics.py              ← DIAGNOSTIC_PAIRS (12 German edge-case pairs)
-    __init__.py                 ← re-exports public API of all three modules
+    visualize.py                ← the five notebook figures (lazy matplotlib, Agg backend)
+    __init__.py                 ← re-exports public API of all four modules
 src/__init__.py
 outputs/tables/                 ← sbert_similarity_results.csv, sbert_summary.json,
                                    sbert_diagnostic_results.csv  (created on first run)
-outputs/figures/                ← PNG plots (created by the notebook only)
+outputs/figures/                ← demo_similarity_heatmap.png, gold_score_distribution.png,
+                                   sbert_scatter_gold_vs_predicted.png, sbert_cosine_by_category.png,
+                                   sbert_diagnostic_results.png  (created by script AND notebook)
 notebooks/02_sbert_similarity.ipynb  ← narrative walkthrough, same logic as the script
 ```
 
@@ -95,10 +98,10 @@ notebooks/02_sbert_similarity.ipynb  ← narrative walkthrough, same logic as th
 4. `compute_cosine_similarities()` → `assign_category()` using YAML thresholds
 5. Normalize gold scores 0–5 → 0–1 (divide by 5)
 6. `compute_metrics()` → Pearson-r, Spearman-r, MAE via `scipy` / `sklearn`
-7. Save CSV + JSON to `output_dir`
-8. Repeat steps 3–4 for `DIAGNOSTIC_PAIRS` from `diagnostics.py`, save separate CSV
+7. Save CSV + JSON to `output_dir`; render the four dataset figures via `visualize.py` to `figures_dir`
+8. Repeat steps 3–4 for `DIAGNOSTIC_PAIRS` from `diagnostics.py`, save separate CSV + diagnostic figure
 
-**Import note:** `evaluate_similarity.py` inserts `Path(__file__).parent` into `sys.path` so that `similarity`, `evaluation`, and `diagnostics` are importable regardless of call style (direct script or `-m` module).
+**Import note:** `evaluate_similarity.py` inserts `Path(__file__).parent` into `sys.path` so that `similarity`, `evaluation`, `diagnostics`, and `visualize` are importable regardless of call style (direct script or `-m` module). `visualize.py` imports `matplotlib` lazily (forces the `Agg` backend), so `import src.sbert` works without matplotlib.
 
 **Windows encoding:** `sys.stdout.reconfigure(encoding="utf-8")` is called at module load to handle German Umlauts and box-drawing characters on cp1252 consoles.
 
@@ -110,6 +113,7 @@ notebooks/02_sbert_similarity.ipynb  ← narrative walkthrough, same logic as th
 | `dataset_name` | Must be `"mteb/stsb_multi_mt"` — the old `"stsb_multi_mt"` (no namespace) is broken in current `huggingface_hub` |
 | `sample_per_category` | `null` = use all 1500 pairs; integer = stratified sample N per category |
 | `thresholds.dissimilar_max` / `similar_min` | Applied to `gold_score_normalized` (0–1 scale) for the three-way categorization |
+| `output_dir` / `figures_dir` | CWD-relative output dirs for tables (CSV/JSON) and figures (PNG) |
 
 ### Word2Vec prototype (fully implemented)
 

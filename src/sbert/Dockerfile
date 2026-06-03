@@ -21,6 +21,9 @@ WORKDIR /app
 # Nur bei Änderungen daran wird neu installiert, nicht bei jeder Code-Änderung.
 # Ohne Word2Vec-, Notebook- und Test-Pakete.
 COPY requirements-sbert.txt .
+# CPU-only PyTorch zuerst installieren. Dadurch zieht sentence-transformers
+# keine CUDA-Bibliotheken nach (~1,5 GB weniger: cudnn, cublas, triton, etc.).
+RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
 RUN pip install --no-cache-dir -r requirements-sbert.txt
 
 # Quellcode & Konfiguration kopieren

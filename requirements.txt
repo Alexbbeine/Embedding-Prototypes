@@ -5,3 +5,6 @@
 # Notebooks & Tests
 ipykernel>=6.0.0
 pytest>=7.0.0
+# Headless-Ausführung der Notebooks (jupyter nbconvert --execute)
+nbconvert>=7.0.0
+nbclient>=0.10.0

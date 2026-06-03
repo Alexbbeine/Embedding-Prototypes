@@ -42,6 +42,13 @@ sys.path.insert(0, str(Path(__file__).parent))
 from similarity   import compute_embeddings, compute_cosine_similarities, assign_category
 from evaluation   import compute_metrics
 from diagnostics  import DIAGNOSTIC_PAIRS
+from visualize    import (
+    plot_demo_heatmap,
+    plot_gold_score_distribution,
+    plot_scatter_gold_vs_predicted,
+    plot_cosine_by_category,
+    plot_diagnostic_results,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -181,11 +188,13 @@ def main() -> None:
     sample_per_category: int | None = config.get("sample_per_category")
     random_seed:         int       = config.get("random_seed", 42)
     output_dir                     = Path(config.get("output_dir", "outputs/tables"))
+    figures_dir                    = Path(config.get("figures_dir", "outputs/figures"))
     thresholds: dict               = config.get("thresholds", {})
     dissimilar_max: float          = thresholds.get("dissimilar_max", 0.3)
     similar_min:    float          = thresholds.get("similar_min",    0.7)
 
     output_dir.mkdir(parents=True, exist_ok=True)
+    figures_dir.mkdir(parents=True, exist_ok=True)
 
     # Modell laden
     print(f"\nLade Modell: {model_name}")
@@ -257,6 +266,20 @@ def main() -> None:
     print(f"\n  Ergebnisse     → {results_path}")
     print(f"  Zusammenfassung → {summary_path}")
 
+    # Visualisierungen (Datensatz) – dieselben Grafiken wie im Notebook
+    print("\nErzeuge Grafiken ...")
+    demo_heatmap_path = figures_dir / "demo_similarity_heatmap.png"
+    gold_dist_path    = figures_dir / "gold_score_distribution.png"
+    scatter_path      = figures_dir / "sbert_scatter_gold_vs_predicted.png"
+    by_category_path  = figures_dir / "sbert_cosine_by_category.png"
+    plot_demo_heatmap(model, demo_heatmap_path)
+    plot_gold_score_distribution(gold_scores, dissimilar_max, similar_min, gold_dist_path)
+    plot_scatter_gold_vs_predicted(
+        results_df, metrics["pearson_r"], metrics["spearman_r"], metrics["mae"], scatter_path
+    )
+    plot_cosine_by_category(results_df, by_category_path)
+    print(f"  Grafiken → {figures_dir}")
+
     # Diagnostische Satzpaare
     print("\n=== Diagnostische Satzpaare ===")
     diag_df = evaluate_diagnostic_pairs(
@@ -265,6 +288,9 @@ def main() -> None:
 
     diag_path = output_dir / "sbert_diagnostic_results.csv"
     diag_df.to_csv(diag_path, index=False, encoding="utf-8")
+
+    diag_figure_path = figures_dir / "sbert_diagnostic_results.png"
+    plot_diagnostic_results(diag_df, dissimilar_max, similar_min, diag_figure_path)
 
     accuracy = float(diag_df["match"].mean())
     correct  = int(diag_df["match"].sum())
@@ -291,6 +317,11 @@ def main() -> None:
     print(f"  {results_path}")
     print(f"  {summary_path}")
     print(f"  {diag_path}")
+    print(f"  {demo_heatmap_path}")
+    print(f"  {gold_dist_path}")
+    print(f"  {scatter_path}")
+    print(f"  {by_category_path}")
+    print(f"  {diag_figure_path}")
     print("═" * 65)
 
 
