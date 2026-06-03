@@ -6,15 +6,15 @@ Der Prototyp untersucht, welche semantisch oder thematisch plausiblen Wortnachba
 
 ## Korpus und Stichprobe
 
-Verwendet wird der Korpus `deu_news_2010_100K` der Leipzig Corpora Collection. Es handelt sich um einen deutschen Nachrichten-Teilkorpus aus dem Jahr 2010 mit 100.000 Saetzen und 1.705.473 Tokens.
+Verwendet wird der Korpus `deu_news_2010_100K` der Leipzig Corpora Collection. Es handelt sich um einen deutschen Nachrichten-Teilkorpus aus dem Jahr 2010 mit 100.000 Sätzen. Nach der projekteigenen Tokenisierung (Kleinschreibung, nur Wort-Tokens, Satzzeichen und Ziffern verworfen) verbleiben 1.625.516 Tokens.
 
 Quelle: <https://corpora.wortschatz-leipzig.de/en?corpusId=deu_news_2010_100K>
 
-Fuer das Training wird der vollstaendige 100K-Korpus verwendet. Dadurch ist die Datengrundlage fest und bei erneuter Ausfuehrung identisch, solange dieselbe Leipzig-Korpusdatei genutzt wird. Ein kleinerer zufaelliger Ausschnitt ist technisch weiterhin moeglich (`sample_size` in `configs/word2vec.yaml` bzw. `--sample-size`), wird aber nur fuer schnelle Testlaeufe verwendet.
+Für das Training wird der vollständige 100K-Korpus verwendet. Dadurch ist die Datengrundlage fest und bei erneuter Ausführung identisch, solange dieselbe Leipzig-Korpusdatei genutzt wird. Ein kleinerer zufälliger Ausschnitt ist technisch weiterhin möglich (`sample_size` in `configs/word2vec.yaml` bzw. `--sample-size`), wird aber nur für schnelle Testläufe verwendet.
 
 ## Vorverarbeitung
 
-Die Leipzig-Datei wird im Format `Sentence_ID<TAB>Sentence` gelesen. Danach werden HTML-Reste, leere Zeilen, fehlerhafte technische Zeichen und doppelte Leerzeichen entfernt. Die Texte werden kleingeschrieben und auf Wortebene tokenisiert. Deutsche Umlaute bleiben erhalten, Satzzeichen werden nicht als eigene Tokens uebernommen.
+Die Leipzig-Datei wird im Format `Sentence_ID<TAB>Sentence` gelesen. Danach werden HTML-Reste, leere Zeilen, fehlerhafte technische Zeichen und doppelte Leerzeichen entfernt. Die Texte werden kleingeschrieben und auf Wortebene tokenisiert. Deutsche Umlaute bleiben erhalten, Satzzeichen werden nicht als eigene Tokens übernommen.
 
 ## Trainingsparameter
 
@@ -24,23 +24,23 @@ Alle Parameter sind in `configs/word2vec.yaml` unter `word2vec_params` gepflegt.
 | --- | ---: | --- |
 | `vector_size` | 100 | Dimension der Wortvektoren |
 | `window` | 5 | Kontextfenster links und rechts |
-| `min_count` | 5 | Mindesthaeufigkeit eines Wortes |
+| `min_count` | 5 | Mindesthäufigkeit eines Wortes |
 | `sg` | 1 | Skip-Gram-Modell |
-| `epochs` | 10 | Trainingsdurchlaeufe |
+| `epochs` | 10 | Trainingsdurchläufe |
 | `seed` | 42 | Reproduzierbarkeit (aus `random_seed`) |
 | `workers` | 1 | Stabilere Reproduzierbarkeit |
 
-Die Parameter sind nicht als optimal zu verstehen, sondern als nachvollziehbare Basiskonfiguration fuer eine prototypische Umsetzung.
+Die Parameter sind nicht als optimal zu verstehen, sondern als nachvollziehbare Basiskonfiguration für eine prototypische Umsetzung.
 
-## Zielwoerter und Auswertung
+## Zielwörter und Auswertung
 
-Untersucht werden Zielwoerter aus Politik, Wirtschaft, Technik und mehrdeutigen Bereichen (konfiguriert unter `target_words`):
+Untersucht werden Zielwörter aus Politik, Wirtschaft, Technik und mehrdeutigen Bereichen (konfiguriert unter `target_words`):
 
 `regierung`, `wahl`, `partei`, `markt`, `unternehmen`, `bank`, `daten`, `software`, `modell`, `netz`
 
-Falls ein Zielwort nicht im trainierten Vokabular enthalten ist, wird ein vordefiniertes haeufigeres Ersatzwort aus derselben Kategorie verwendet. Fuer jedes Zielwort werden die fuenf naechsten Nachbarn anhand der Cosine Similarity ausgegeben.
+Falls ein Zielwort nicht im trainierten Vokabular enthalten ist, wird ein vordefiniertes häufigeres Ersatzwort aus derselben Kategorie verwendet. Für jedes Zielwort werden die fünf nächsten Nachbarn anhand der Cosine Similarity ausgegeben.
 
-Die Ergebnisdateien liegen nach der Ausfuehrung in:
+Die Ergebnisdateien liegen nach der Ausführung in:
 
 - `outputs/tables/word2vec_neighbors.csv`
 - `outputs/tables/word2vec_neighbors.md`
@@ -51,19 +51,19 @@ Die Ergebnisdateien liegen nach der Ausfuehrung in:
 
 Das trainierte Modell liegt unter `outputs/models/`, die aufbereiteten Korpusdaten unter `data/`.
 
-Die Nachbarschaften werden anschliessend fachlich in drei Gruppen eingeordnet (Spalte `einordnung`):
+Die Nachbarschaften werden anschließend fachlich in drei Gruppen eingeordnet (Spalte `einordnung`):
 
 | Gruppe | Bedeutung |
 | --- | --- |
-| semantisch plausibel | aehnliche Bedeutung |
+| semantisch plausibel | ähnliche Bedeutung |
 | thematisch plausibel | gleiches Themenfeld |
-| problematisch | unklare oder irrefuehrende Naehe |
+| problematisch | unklare oder irreführende Nähe |
 
 ## Visualisierung
 
-Die globale PCA-Visualisierung reduziert nur Zielwoerter und deren direkte Nachbarn auf zwei Dimensionen. Zusaetzlich wird fuer jedes einzelne Zielwort eine eigene PCA-Grafik mit Zielwort und direkten Nachbarn erzeugt. Beide Formen dienen der explorativen Veranschaulichung und werden nicht als eigenstaendiger Leistungsnachweis interpretiert.
+Die globale PCA-Visualisierung reduziert nur Zielwörter und deren direkte Nachbarn auf zwei Dimensionen. Zusätzlich wird für jedes einzelne Zielwort eine eigene PCA-Grafik mit Zielwort und direkten Nachbarn erzeugt. Beide Formen dienen der explorativen Veranschaulichung und werden nicht als eigenständiger Leistungsnachweis interpretiert.
 
-## Ausfuehrung
+## Ausführung
 
 ```powershell
 # Kompletter Ablauf (Download -> Aufbereitung -> Training -> Auswertung)
@@ -76,12 +76,13 @@ Die globale PCA-Visualisierung reduziert nur Zielwoerter und deren direkte Nachb
 .venv\Scripts\python.exe -m src.word2vec.evaluate
 ```
 
-Hinweis: `gensim` wird fuer `train`/`evaluate` benoetigt. `gensim 4.4.0` stellt ein Python-3.13-Wheel bereit und laeuft in der vorhandenen `.venv` (Python 3.13). Alternativ steht der Docker-Container (`docker compose run word2vec`, Basis Python 3.12) bereit.
+Hinweis: `gensim` wird für `train`/`evaluate` benötigt. `gensim 4.4.0` stellt ein Python-3.13-Wheel bereit und läuft in der vorhandenen `.venv` (Python 3.13). Alternativ steht der Docker-Container (`docker compose run word2vec`, Basis Python 3.12) bereit.
 
 ## Grenzen
 
-Die Ergebnisse haengen stark vom verwendeten Korpus, der Stichprobengroesse, der Vorverarbeitung und den Trainingsparametern ab. Word2Vec erzeugt statische Wortvektoren und kann unterschiedliche Bedeutungen eines Wortes nicht kontextabhaengig unterscheiden. Die PCA-Darstellung ist zudem eine vereinfachte zweidimensionale Projektion eines hoeherdimensionalen Vektorraums.
+Die Ergebnisse hängen stark vom verwendeten Korpus, der Stichprobengröße, der Vorverarbeitung und den Trainingsparametern ab. Word2Vec erzeugt statische Wortvektoren und kann unterschiedliche Bedeutungen eines Wortes nicht kontextabhängig unterscheiden. Die PCA-Darstellung ist zudem eine vereinfachte zweidimensionale Projektion eines höherdimensionalen Vektorraums.
 
 ## Zwischenfazit
 
-Der Prototyp zeigt, wie aus einem begrenzten deutschsprachigen Korpus statische Wortvektoren trainiert und Wortnachbarschaften sichtbar gemacht werden koennen. Die Ergebnisse koennen plausible semantische oder thematische Relationen zeigen, bleiben aber methodisch an die konkrete Datenbasis und Parametrisierung gebunden.
+Der Prototyp zeigt, wie aus einem begrenzten deutschsprachigen Korpus statische Wortvektoren trainiert und Wortnachbarschaften sichtbar gemacht werden können. Die Ergebnisse können plausible semantische oder thematische Relationen zeigen, bleiben aber methodisch an die konkrete Datenbasis und Parametrisierung gebunden.
+</content>

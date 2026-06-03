@@ -17,7 +17,7 @@ Python virtual environment is in `.venv/`. Always use it explicitly — there is
 .venv\Scripts\pip install <package>
 ```
 
-All scripts **must be run from the project root**, because output paths (e.g. `outputs/tables/`) are relative to the working directory, not to `__file__`.
+Both prototypes anchor their output paths to the project root (via `Path(__file__).resolve().parents[2]`), so results land in the repo regardless of the current working directory. Running from the project root is still recommended for consistency (and the relative `--config` default resolves against the root).
 
 ## Running the SBERT prototype
 
@@ -89,6 +89,7 @@ outputs/figures/                ← demo_similarity_heatmap.png, gold_score_dist
                                    sbert_scatter_gold_vs_predicted.png, sbert_cosine_by_category.png,
                                    sbert_diagnostic_results.png  (created by script AND notebook)
 notebooks/02_sbert_similarity.ipynb  ← narrative walkthrough, same logic as the script
+docs/prototyp_sbert.md          ← method write-up for the paper
 ```
 
 **Data flow in `evaluate_similarity.py`:**
@@ -113,7 +114,7 @@ notebooks/02_sbert_similarity.ipynb  ← narrative walkthrough, same logic as th
 | `dataset_name` | Must be `"mteb/stsb_multi_mt"` — the old `"stsb_multi_mt"` (no namespace) is broken in current `huggingface_hub` |
 | `sample_per_category` | `null` = use all 1500 pairs; integer = stratified sample N per category |
 | `thresholds.dissimilar_max` / `similar_min` | Applied to `gold_score_normalized` (0–1 scale) for the three-way categorization |
-| `output_dir` / `figures_dir` | CWD-relative output dirs for tables (CSV/JSON) and figures (PNG) |
+| `output_dir` / `figures_dir` | Output dirs for tables (CSV/JSON) and figures (PNG); relative values are anchored to the project root |
 
 ### Word2Vec prototype (fully implemented)
 
@@ -150,7 +151,7 @@ docs/prototyp_word2vec.md       ← method write-up for the paper
 3. `train_model()` → gensim `Word2Vec` on the tokenized sentences → `outputs/models/...model` + metadata JSON
 4. `evaluate_model()` → for each target word, `topn` nearest neighbours by cosine similarity → CSV/Markdown; PCA plots (global + per target); `word2vec_target_words.json`
 
-**Import / path notes:** modules use package-relative imports and are run as `python -m src.word2vec.<module>`. Unlike SBERT (CWD-relative), `config.py` anchors all paths to the project root via `Path(__file__).resolve().parents[2]`, so outputs land in the repo regardless of CWD — but still run from the root for consistency. `train.py` and `evaluate.py` import `gensim` lazily (inside functions) and `visualize.py` imports matplotlib/sklearn lazily, so `import src.word2vec` works without those heavy/optional dependencies.
+**Import / path notes:** modules use package-relative imports and are run as `python -m src.word2vec.<module>`. `config.py` anchors all paths to the project root via `Path(__file__).resolve().parents[2]`, so outputs land in the repo regardless of CWD (the SBERT prototype anchors the same way) — but still run from the root for consistency. `train.py` and `evaluate.py` import `gensim` lazily (inside functions) and `visualize.py` imports matplotlib/sklearn lazily, so `import src.word2vec` works without those heavy/optional dependencies.
 
 **Key config parameters (`configs/word2vec.yaml`):**
 

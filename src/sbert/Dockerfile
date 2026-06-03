@@ -3,9 +3,9 @@
 # Semantische Satzähnlichkeit mit sentence-transformers auf dem deutschen STS-B.
 #
 # Verwendung (aus dem Projektroot):
+#   docker compose build sbert               # Image bauen
 #   docker compose run sbert                 # Evaluation ausführen
 #   docker compose run sbert bash            # Interaktive Shell
-#   docker build -f docker/sbert/Dockerfile .  # Manueller Build
 # ─────────────────────────────────────────────────────────────────────────────
 
 # Basis-Image

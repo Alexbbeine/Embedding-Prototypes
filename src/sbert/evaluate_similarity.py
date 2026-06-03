@@ -37,6 +37,12 @@ import yaml
 from datasets import load_dataset
 from sentence_transformers import SentenceTransformer
 
+# Projektroot (src/sbert/evaluate_similarity.py → parents[2]). Relative Ausgabe-
+# und Konfigurationspfade werden hieran verankert, damit Ergebnisse unabhängig
+# vom aktuellen Arbeitsverzeichnis im Repo landen (analog zu src/word2vec/config.py).
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_CONFIG_PATH = PROJECT_ROOT / "configs" / "sbert.yaml"
+
 # Sicherstellen, dass die Submodule importierbar sind, unabhängig davon, ob das Skript direkt oder als Modul aufgerufen wird.
 sys.path.insert(0, str(Path(__file__).parent))
 from similarity   import compute_embeddings, compute_cosine_similarities, assign_category
@@ -174,7 +180,7 @@ def main() -> None:
     )
     parser.add_argument(
         "--config",
-        default="configs/sbert.yaml",
+        default=str(DEFAULT_CONFIG_PATH),
         help="Pfad zur YAML-Konfigurationsdatei (Standard: configs/sbert.yaml)",
     )
     args = parser.parse_args()
@@ -187,8 +193,10 @@ def main() -> None:
     split:               str       = config["split"]
     sample_per_category: int | None = config.get("sample_per_category")
     random_seed:         int       = config.get("random_seed", 42)
-    output_dir                     = Path(config.get("output_dir", "outputs/tables"))
-    figures_dir                    = Path(config.get("figures_dir", "outputs/figures"))
+    # Relative Pfade aus der Konfiguration am Projektroot verankern (CWD-unabhängig).
+    # Ein absoluter Konfigurationswert ersetzt den Projektroot wie üblich.
+    output_dir                     = PROJECT_ROOT / config.get("output_dir", "outputs/tables")
+    figures_dir                    = PROJECT_ROOT / config.get("figures_dir", "outputs/figures")
     thresholds: dict               = config.get("thresholds", {})
     dissimilar_max: float          = thresholds.get("dissimilar_max", 0.3)
     similar_min:    float          = thresholds.get("similar_min",    0.7)
