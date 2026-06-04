@@ -26,7 +26,10 @@ data/
 *.bin
 *.safetensors
 
-# IDEs & Editoren 
+# Claude Code Projektanweisungen (lokal behalten, nicht ins Repo)
+CLAUDE.md
+
+# IDEs & Editoren
 .vscode/
 .idea/
 *.swp

@@ -1,6 +1,6 @@
 # Vom Wort zum Vektor – Embeddings für Texte
 
-Seminarprojekt (DHBW) zum Thema Text-Embeddings. Das Repository enthält zwei
+Projekt (DHBW) zum Thema Text-Embeddings. Das Repository enthält zwei
 in sich abgeschlossene Python-Prototypen, die zwei unterschiedliche Ansätze zur
 Vektorrepräsentation von Sprache demonstrieren:
 
@@ -25,7 +25,6 @@ API.
 Embedding-Prototypes/
 │
 ├── README.md                       Dieses Dokument
-├── CLAUDE.md                       Hinweise für die Arbeit am Code
 │
 ├── docker-compose.yaml             Beide Prototypen als Container-Services
 │
@@ -57,9 +56,9 @@ Embedding-Prototypes/
 │   ├── 01_word2vec_exploration.ipynb
 │   └── 02_sbert_similarity.ipynb
 │
-├── data/                           Rohkorpus + verarbeitete Daten (gitignored)
+├── data/                           Rohkorpus + verarbeitete Daten
 ├── outputs/
-│   ├── models/                     Trainierte Word2Vec-Modelle (gitignored)
+│   ├── models/                     Trainierte Word2Vec-Modelle
 │   ├── tables/                     CSV / JSON / Markdown-Ergebnisse
 │   └── figures/                    PNG-Abbildungen
 │
@@ -281,7 +280,6 @@ fehlt. `tests/conftest.py` setzt den Projektroot auf den `sys.path`.
 
 ## Weiterführende Dokumentation
 
-- `CLAUDE.md` – detaillierte Architektur- und Datenflussbeschreibung
 - `docs/prototyp_word2vec.md` – Methodik-Ausarbeitung Prototyp 1 (Word2Vec)
 - `docs/prototyp_sbert.md` – Methodik-Ausarbeitung Prototyp 2 (Sentence-BERT)
 </content>
