@@ -282,4 +282,3 @@ fehlt. `tests/conftest.py` setzt den Projektroot auf den `sys.path`.
 
 - `docs/prototyp_word2vec.md` – Methodik-Ausarbeitung Prototyp 1 (Word2Vec)
 - `docs/prototyp_sbert.md` – Methodik-Ausarbeitung Prototyp 2 (Sentence-BERT)
-</content>

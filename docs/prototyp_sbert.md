@@ -96,4 +96,3 @@ Die Ergebnisse hängen vom gewählten Modell, dem Datensatz und den festgelegten
 ## Zwischenfazit
 
 Der Prototyp zeigt, wie ein vortrainiertes Sentence-BERT-Modell semantische Satzähnlichkeit für Deutsch berechnet und wie sich die Vorhersagen quantitativ gegen einen Gold-Standard und qualitativ gegen linguistische Grenzfälle prüfen lassen. Die Korrelationsmaße geben Aufschluss über die allgemeine Güte, während die diagnostischen Paare gezielt Stärken und Schwächen sichtbar machen. Die Aussagekraft bleibt an Modell, Datenbasis und Schwellenwahl gebunden.
-</content>

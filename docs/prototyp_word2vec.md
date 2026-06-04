@@ -85,4 +85,3 @@ Die Ergebnisse hängen stark vom verwendeten Korpus, der Stichprobengröße, der
 ## Zwischenfazit
 
 Der Prototyp zeigt, wie aus einem begrenzten deutschsprachigen Korpus statische Wortvektoren trainiert und Wortnachbarschaften sichtbar gemacht werden können. Die Ergebnisse können plausible semantische oder thematische Relationen zeigen, bleiben aber methodisch an die konkrete Datenbasis und Parametrisierung gebunden.
-</content>
